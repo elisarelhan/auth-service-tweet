@@ -26,22 +26,22 @@ public class AuthService implements UserDetailsService {
 	@Autowired
 	private PasswordEncoder bcryptEncoder;
 
-	private static final String USER_CREATED_TOPIC = "user";
-	@Autowired
-	private KafkaTemplate<String, User> kafkaTemplate;
-	@Autowired
-	private KafkaTemplate<String, String> template;
+// 	private static final String USER_CREATED_TOPIC = "user";
+// 	@Autowired
+// 	private KafkaTemplate<String, User> kafkaTemplate;
+// 	@Autowired
+// 	private KafkaTemplate<String, String> template;
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		User user = userRepo.findByEmail(email);
 		
 		if (user != null) {
-			kafkaTemplate.send(USER_CREATED_TOPIC, user);
+// 			kafkaTemplate.send(USER_CREATED_TOPIC, user);
 			return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
 					new ArrayList<>());
 		} else {
-			template.send(USER_CREATED_TOPIC,"User not found with username: " + email);
+// 			template.send(USER_CREATED_TOPIC,"User not found with username: " + email);
 			throw new UsernameNotFoundException("User not found with username: " + email);
 		}
 	}
@@ -51,12 +51,12 @@ public class AuthService implements UserDetailsService {
 			user.setPassword(bcryptEncoder.encode(user.getPassword()));
 			User userCreated = userRepo.save(user);
 
-			template.send(USER_CREATED_TOPIC,"User registered");
+// 			template.send(USER_CREATED_TOPIC,"User registered");
 
 
 			return userCreated;
 		} else {
-			template.send(USER_CREATED_TOPIC,"Email already registered");
+// 			template.send(USER_CREATED_TOPIC,"Email already registered");
 			throw new UsernamePresentException("Email already registered");
 		}
 	}
@@ -66,10 +66,10 @@ public class AuthService implements UserDetailsService {
 
 		if (user != null) {
 			user.setPassword(bcryptEncoder.encode(user.getPassword()));
-			template.send(USER_CREATED_TOPIC, "Password changed");
+// 			template.send(USER_CREATED_TOPIC, "Password changed");
 			return userRepo.save(user);
 		} else {
-			template.send(USER_CREATED_TOPIC, "Email not registered");
+// 			template.send(USER_CREATED_TOPIC, "Email not registered");
 			throw new UserNotFoundException("Email not registered");
 		}
 
