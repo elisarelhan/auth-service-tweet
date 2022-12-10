@@ -15,7 +15,7 @@ import com.tweetapp.auth.repository.UserRepo;
 public class UserService {
 
 	@Autowired
-// 	private UserRepo userRepo;
+	private UserRepo userRepo;
 // 	private static final String USER_CREATED_TOPIC = "user";
 // 	@Autowired
 // 	private KafkaTemplate<String, User> kafkaTemplate;
