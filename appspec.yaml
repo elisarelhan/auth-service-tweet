@@ -1,0 +1,10 @@
+version: 1.0
+Resources: 
+  -TargetService:
+    Type: AWS::ECS::Service
+    Properties:
+      TaskDefinition:
+      LoadBalancerInfo:
+        ContainerName: "authservice_902477"
+        ContainerPort: "8000"
+      PlatformVersion: "Latest"

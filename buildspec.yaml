@@ -1,0 +1,32 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+  pre_build:
+    commands:
+    - echo Logging in to Amazon ECR...
+    - aws --version
+    - aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 325145872274.dkr.ecr.us-west-2.amazonaws.com
+    - IMAGE_NAME=authservice_902477
+    - IMAGE_URI=325145872274.dkr.ecr.us-west-2.amazonaws.com/authservice_902477
+    - CONTAINER_NAME=authservice_902477
+  build:
+    commands:
+    - echo Build started on `date`
+    - echo $IMAGE_NAME
+    - mvn clean package -Ddockerfile.skip -Dmaven.test.skip
+    - echo Building the Docker image...
+    - docker build -t $IMAGE_NAME .
+    
+  post_build:
+    commands:
+    - echo Build completed on `date`
+    - echo $(docker images)
+    - docker tag $IMAGE_NAME $IMAGE_URI
+    - echo Pushing docker image
+    - docker push $IMAGE_URI
+    - echo Writing image definitions file...
+    - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $IMAGE_URI > imagedefinitions.json
+artifacts:
+  files: imagedefinitions.json
