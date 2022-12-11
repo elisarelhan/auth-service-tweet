@@ -65,7 +65,7 @@ public class AuthService implements UserDetailsService {
 		User user = userRepo.findByEmail(email);
 
 		if (user != null) {
-			user.setPassword(bcryptEncoder.encode(user.getPassword()));
+			user.setPassword(bcryptEncoder.encode(password));
 // 			template.send(USER_CREATED_TOPIC, "Password changed");
 			return userRepo.save(user);
 		} else {
